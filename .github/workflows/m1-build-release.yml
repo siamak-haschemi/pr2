@@ -60,19 +60,38 @@ jobs:
       - name: Package application (jpackage)
         run: ./gradlew jpackage --no-daemon --stacktrace
 
+      - name: Show jpackage output tree
+        run: |
+          echo "Listing build/jpackage (if exists)";
+          if [ -d build/jpackage ]; then ls -la build/jpackage; fi
+
       - name: macOS - Zip .app bundle (if present)
         if: runner.os == 'macOS'
         run: |
           set -euo pipefail
-          # default working-directory is milestones/${{ inputs.milestone }}
-          cd build/jpackage
-          if ls *.app 1>/dev/null 2>&1; then
-            APP_DIR=$(ls -d *.app | head -n1)
-            echo "Found app: $APP_DIR"
-            ditto -c -k --sequesterRsrc --keepParent "$APP_DIR" "${APP_DIR}.zip"
-            ls -l
+          # Find first .app anywhere under build/jpackage
+          APP_PATH=$(find build/jpackage -maxdepth 3 -type d -name "*.app" -print -quit || true)
+          if [ -n "${APP_PATH}" ]; then
+            echo "Found app: ${APP_PATH}"
+            APP_NAME=$(basename "${APP_PATH}")
+            APP_PARENT=$(dirname "${APP_PATH}")
+            (cd "${APP_PARENT}" && ditto -c -k --sequesterRsrc --keepParent "${APP_NAME}" "${APP_NAME}.zip")
+            mv "${APP_PARENT}/${APP_NAME}.zip" build/jpackage/
+            ls -l build/jpackage
           else
             echo "No .app bundle found, skipping zip"
+          fi
+
+      - name: macOS - Preflight .app.zip exists
+        if: runner.os == 'macOS'
+        run: |
+          set -euo pipefail
+          if ls build/jpackage/*.app.zip 1>/dev/null 2>&1; then
+            echo "OK: found app zip"
+          else
+            echo "ERROR: No .app.zip found after jpackage. Contents:" >&2
+            if [ -d build/jpackage ]; then ls -R build/jpackage >&2; fi
+            exit 1
           fi
 
       - name: macOS - Upload zipped .app
@@ -83,6 +102,25 @@ jobs:
           path: |
             build/jpackage/*.app.zip
           if-no-files-found: warn
+
+      - name: Windows - Locate .exe installer
+        if: runner.os == 'Windows'
+        run: |
+          set -euo pipefail
+          EXE_PATH=$(find build/jpackage -maxdepth 3 -type f -name "*-*.exe" -print -quit || true)
+          if [ -n "${EXE_PATH}" ]; then
+            echo "Found exe: ${EXE_PATH}"
+            EXE_NAME=$(basename "${EXE_PATH}")
+            EXE_PARENT=$(dirname "${EXE_PATH}")
+            if [ "${EXE_PARENT}" != "build/jpackage" ]; then
+              cp "${EXE_PATH}" build/jpackage/
+            fi
+            ls -l build/jpackage
+          else
+            echo "ERROR: No *-*.exe found under build/jpackage after jpackage." >&2
+            if [ -d build/jpackage ]; then ls -R build/jpackage >&2; fi
+            exit 1
+          fi
 
       - name: Windows - Upload .exe installer only
         if: runner.os == 'Windows'

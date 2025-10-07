@@ -45,20 +45,28 @@ By completing this project, you will:
 
 ------
 
-### **Milestone 2 – Exceptions and Testing with JUnit**
-**Topics:** Exceptions · Testing · Error Handling
+### **Milestone 2 – Exceptions, Testing, and Quiz UI**
+**Topics:** Exceptions · Testing · JavaFX Views/Controllers
 
-**Goal:** Implement the core logic layer with proper exception handling and unit tests.
+**Goal:** Add a validated core model with tests and a simple quiz UI using a fixed set of questions.
 
 **Tasks:**
-- Create model classes:
-  - `Question` (fields: questionText, correctAnswer, possibleAnswers)
-  - `Quiz` (a list of `Question` objects)
-- Validate input (e.g., non-empty questions, at least one correct answer)
-- Implement custom exceptions such as `InvalidQuestionException`
-- Write **JUnit tests** for question and quiz validation
+- Model and exceptions:
+  - Implement `Question` (text, options, single correct index) and `Quiz` (title + list of questions)
+  - Add `InvalidQuestionException` and input validation (non-empty text, options present, index in range)
+  - Write JUnit 5 tests to cover valid and invalid scenarios
+- Fixed quiz content:
+  - Provide a 10-question quiz on “JUnit and Exceptions in Java” via a fixture
+- JavaFX UI (separate views/controllers by feature):
+  - `main.MainController` hosts a `StackPane`
+  - `overview.OverviewController` + `overview.fxml` show quiz title and list of all questions with the correct answer marked
+  - `quiz.QuizExecutionController` + `quiz_execution.fxml` run a quiz flow:
+    - Start Quiz → show first question with radio-button answers
+    - Continue → immediate feedback (highlights correct and selection)
+    - Next → next question, then return to overview after the last
+- Keep module-info simple (use `open module`) to avoid module boilerplate for students
 
-💡 *Focus:* Unit testing, exception handling, clean code
+💡 *Focus:* Unit tests + exception design, small but well-structured UI with feature-based packages
 
 ------
 

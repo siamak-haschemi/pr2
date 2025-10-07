@@ -43,17 +43,23 @@ Goal: Students start from a fully functioning, instructor-provided JavaFX app. E
   - CI workflow run is green and expected artifacts are attached to the Release.
   - Student can demonstrate local run via Gradle and basic PR review etiquette.
 
-### Milestone 2 — Exceptions and Testing with JUnit
-Goal: Core model, validations, custom exceptions, and tests.
+### Milestone 2 — Exceptions, Testing, and Quiz UI
+Goal: Implement validated core model with custom exceptions and unit tests, plus a simple quiz UI built from feature-specific views/controllers.
 - Tasks
-  - Model: `Question` (text, options, single correct index), `Quiz` (title, createdAt, List<Question>), optional `Deck` alias.
-  - Validation: non-empty question text; at least one option; exactly one valid correct index; quiz must have title.
-  - Custom exceptions: `InvalidQuestionException`, `ValidationException` (or similar), `StorageException` placeholder.
-  - Unit tests for model validation and exception cases (JUnit 5).
-  - Use try-with-resources where applicable.
+  - Model and exceptions
+    - `Question` (text, options, single correct index) and `Quiz` (title + questions)
+    - Validation: non-empty text, at least one option, correct index within bounds; non-empty quiz title
+    - Custom exception: `InvalidQuestionException`
+    - JUnit 5 tests for valid/invalid construction and behaviors
+  - Fixed quiz fixture
+    - Add `QuizFixtures.fixedJUnitAndExceptionsQuiz()` with 10 curated questions
+  - JavaFX UI by feature
+    - `main.MainController` + `main/main.fxml` (StackPane host): switches views
+    - `overview.OverviewController` + `overview/overview.fxml`: show quiz title and list of questions, mark correct answers; “Start Quiz” button
+    - `quiz.QuizExecutionController` + `quiz/quiz_execution.fxml`: radio-button answers, Continue (feedback), Next (advance), return to overview when finished
 - Acceptance
-  - Tests pass in CI; coverage report visible (not gating).
-  - Demonstrate exception handling behavior and validation paths.
+  - Tests pass in CI; Spotless/SpotBugs run; coverage is visible (not gating)
+  - Manual run shows overview with 10 questions; Start Quiz → execution flow with immediate feedback; “Next” cycles through and returns to overview
 
 ### Milestone 3 — Collections and Sorting
 Goal: Manage multiple quizzes/decks; sorting and searching.
