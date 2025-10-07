@@ -97,9 +97,9 @@ jlink {
         if (os.isMacOsX) {
             skipInstaller = true
         }
-
+        // Produce only .exe on Windows (no .msi)
         if (os.isWindows) {
-            installerType = "msi"
+            installerType = "exe"
         }
         imageName = "quizzr"
         appVersion = "1.0.0"

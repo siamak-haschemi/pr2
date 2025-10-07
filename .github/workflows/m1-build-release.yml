@@ -69,10 +69,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Download all build artifacts
+      - name: Download build artifacts (M1 only)
         uses: actions/download-artifact@v4
         with:
+          pattern: m1-*
           path: release-assets
+          merge-multiple: true
 
       - name: List downloaded artifacts
         run: |
@@ -82,12 +84,13 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ inputs.tag }}
-          name: ${{ inputs.name }}
+          name: ${{ inputs.name || inputs.tag }}
           prerelease: ${{ inputs.prerelease }}
           allowUpdates: true
           replacesArtifacts: true
           artifactErrorsFailBuild: true
           artifacts: |
-            release-assets/**/*.*
+            release-assets/*.zip
+            release-assets/*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
