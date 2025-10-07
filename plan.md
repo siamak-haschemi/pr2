@@ -27,19 +27,21 @@
 
 ## Milestone Details & Acceptance Criteria
 
-### Milestone 1 — Hello World with Gradle and JavaFX
-Goal: Working Gradle + JavaFX setup; CI and packaging operational.
+### Milestone 1 — Project Bootstrap & Git Workflow
+Goal: Students start from a fully functioning, instructor-provided JavaFX app. Establish Git/GitHub workflow and CI visibility.
 - Tasks
-  - Initialize Gradle (Kotlin DSL), Java 21, JavaFX dependencies.
-  - Add `App` JavaFX entry point, `main.fxml` with label “Hello Quiz Trainer!” and a Start button.
-  - Configure Spotless, SpotBugs (report-only), JUnit 5, JaCoCo, Badass Runtime Plugin.
-  - Provide Scene Builder-compatible FXML.
-  - GitHub Actions matrix for macOS-14 (Apple Silicon) and Windows; upload installers as artifacts.
-  - Protect `main`; branch `milestone/1-hello-javafx`; add instructor as collaborator; open PR.
+  - Create a GitHub account (if needed) and a private team repository.
+  - Enable branch protection on `main`; add the instructor as collaborator and PR reviewer.
+  - Create a feature branch (e.g., `milestone/1-bootstrap`).
+  - Commit and push the provided Milestone 1 code (fully functioning app with build, tests, formatting, SpotBugs, and packaging preconfigured).
+  - Open a Pull Request and add the instructor as reviewer.
+  - Run the provided GitHub Action manually to build/test and package; verify artifacts:
+    - macOS: zipped `.app` bundle only
+    - Windows: `.exe` installer only
 - Acceptance
-  - CI green (build, Spotless, SpotBugs report, tests, JaCoCo report, packaging).
-  - Installer artifacts downloadable from PR.
-  - Short live demo of app launch and UI.
+  - PR created with correct branch naming and instructor added as reviewer.
+  - CI workflow run is green and expected artifacts are attached to the Release.
+  - Student can demonstrate local run via Gradle and basic PR review etiquette.
 
 ### Milestone 2 — Exceptions and Testing with JUnit
 Goal: Core model, validations, custom exceptions, and tests.
@@ -213,4 +215,3 @@ Goal: End-to-end UI connected to backend with basic validation and score view.
 - Scene Builder/version drift: pin JavaFX in Gradle; provide setup tips.
 - Serialization complexity: simplified schema; comprehensive round-trip tests.
 - Coverage pressure: report-only JaCoCo; use numbers for discussion, not gates.
-

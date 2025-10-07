@@ -88,6 +88,6 @@ jobs:
           replacesArtifacts: true
           artifactErrorsFailBuild: true
           artifacts: |
-            release-assets/**/*
+            release-assets/**/*.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

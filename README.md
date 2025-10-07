@@ -27,18 +27,21 @@ By completing this project, you will:
 
 ## 🪜 Project Milestones
 
-### **Milestone 1 – Hello World with Gradle and JavaFX**
-**Topics:** Build process with Gradle · JavaFX Basics
+### **Milestone 1 – Project Bootstrap & Git Workflow**
+**Topics:** GitHub workflow · Branching · CI basics
 
-**Goal:** Create the project setup and a minimal working UI.
+**Goal:** Start from a fully functioning, instructor-provided JavaFX app and establish your Git/GitHub workflow.
 
 **Tasks:**
-- Initialize a Gradle project with JavaFX support
-- Create a main window that displays a “Hello Quiz Trainer!” message
-- Add a simple “Start” button (no functionality yet)
-- Push the setup to GitHub and create your first Pull Request
+- Create a GitHub account (if not already available)
+- Create a new private repository for your team
+- Enable branch protection on `main` and add the instructor as collaborator/reviewer
+- Create a feature branch (e.g., `milestone/1-bootstrap`)
+- Commit and push the provided Milestone 1 code (fully functioning app)
+- Open a Pull Request and add the instructor as reviewer
+- Trigger CI and verify it builds/tests and produces the expected artifacts (macOS: zipped `.app`; Windows: `.exe`)
 
-💡 *Focus:* Gradle build, JavaFX setup, Git workflow
+💡 *Focus:* Team collaboration, PR workflow, CI visibility
 
 ------
 
