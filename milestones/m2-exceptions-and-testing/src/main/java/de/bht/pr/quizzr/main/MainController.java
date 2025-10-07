@@ -1,7 +1,7 @@
 package de.bht.pr.quizzr.main;
 
 import de.bht.pr.quizzr.model.Quiz;
-import de.bht.pr.quizzr.model.QuizFixtures;
+import de.bht.pr.quizzr.model.QuizGenerator;
 import de.bht.pr.quizzr.overview.OverviewController;
 import de.bht.pr.quizzr.quiz.QuizExecutionController;
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class MainController {
 
   @FXML
   void initialize() throws IOException {
-    quiz = QuizFixtures.fixedJUnitAndExceptionsQuiz();
+    quiz = QuizGenerator.generateQuiz();
 
     FXMLLoader ovLoader =
         new FXMLLoader(getClass().getResource("/de/bht/pr/quizzr/overview/overview.fxml"));

@@ -2,10 +2,10 @@ package de.bht.pr.quizzr.model;
 
 import java.util.List;
 
-public final class QuizFixtures {
-  private QuizFixtures() {}
+public final class QuizGenerator {
+  private QuizGenerator() {}
 
-  public static Quiz fixedJUnitAndExceptionsQuiz() {
+  public static Quiz generateQuiz() {
     Quiz quiz = new Quiz("JUnit and Exceptions in Java");
 
     quiz.addQuestion(
