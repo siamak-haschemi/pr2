@@ -1,0 +1,99 @@
+name: M1 Build and Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag for the release (e.g., vM1)"
+        required: true
+        type: string
+      name:
+        description: "Release name (defaults to tag if empty)"
+        required: false
+        type: string
+      prerelease:
+        description: "Mark as pre-release"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build and Package (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, windows-latest]
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: milestones/m1-hello-javafx
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Verify Gradle
+        run: ./gradlew --version
+
+      - name: Build + Test + Code Checks
+        run: ./gradlew clean test spotlessCheck spotbugsMain spotbugsTest --no-daemon --stacktrace
+
+      - name: Package runtime image and installer (jlink + jpackage)
+        run: ./gradlew jlink jpackage --no-daemon --stacktrace
+
+      - name: Upload artifacts (jpackage output)
+        uses: actions/upload-artifact@v4
+        with:
+          name: m1-${{ matrix.os }}-jpackage
+          path: |
+            milestones/m1-hello-javafx/build/jpackage/**
+          if-no-files-found: warn
+
+      - name: Upload artifacts (runtime image)
+        uses: actions/upload-artifact@v4
+        with:
+          name: m1-${{ matrix.os }}-image
+          path: |
+            milestones/m1-hello-javafx/build/image/**
+          if-no-files-found: warn
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - name: List downloaded artifacts
+        run: |
+          echo "Downloaded artifacts:" && ls -R release-assets || true
+
+      - name: Create or update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: ${{ inputs.name || inputs.tag }}
+          prerelease: ${{ inputs.prerelease }}
+          files: |
+            release-assets/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
