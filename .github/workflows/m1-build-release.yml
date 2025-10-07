@@ -87,13 +87,15 @@ jobs:
           echo "Downloaded artifacts:" && ls -R release-assets || true
 
       - name: Create or update GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ inputs.tag }}
-          name: ${{ inputs.name || inputs.tag }}
+          tag: ${{ inputs.tag }}
+          name: ${{ inputs.name }}
           prerelease: ${{ inputs.prerelease }}
-          files: |
-            release-assets/**
+          allowUpdates: true
+          replacesArtifacts: true
+          artifactErrorsFailBuild: true
+          artifacts: |
+            release-assets/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
