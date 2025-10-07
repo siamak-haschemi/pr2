@@ -4,16 +4,19 @@ plugins {
     id("org.javamodularity.moduleplugin") version "1.8.15"
     id("org.openjfx.javafxplugin") version "0.1.0"
     id("org.beryx.jlink") version "3.1.3"
+    id("com.diffplug.spotless") version "8.0.0"
+    id("com.github.spotbugs") version "6.2.5"
 }
 
-group = "de.bht.pr_two.quizzr"
-version = "1.0-SNAPSHOT"
+group = "de.bht.pr.quizzr"
+version = "1.0"
 
 repositories {
     mavenCentral()
 }
 
 val junitVersion = "5.12.1"
+val junitPlatformVersion = "1.12.1"
 
 java {
     toolchain {
@@ -26,8 +29,8 @@ tasks.withType<JavaCompile> {
 }
 
 application {
-    mainModule.set("de.bht.pr_two.quizzr")
-    mainClass.set("de.bht.pr_two.quizzr.HelloApplication")
+    mainModule.set("de.bht.pr.quizzr")
+    mainClass.set("de.bht.pr.quizzr.HelloApplication")
 }
 
 javafx {
@@ -55,6 +58,7 @@ dependencies {
     }
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${junitPlatformVersion}")
 }
 
 
@@ -62,10 +66,34 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+// Formatting: Google Java Format via Spotless
+spotless {
+    java {
+        googleJavaFormat()
+        target("src/**/*.java")
+    }
+}
+
+// Static analysis: SpotBugs report-only to avoid blocking students
+spotbugs {
+    ignoreFailures.set(true)
+}
+
+// Ensure check runs code format and static analysis
+tasks.named("check") {
+    dependsOn("spotbugsMain", "spotbugsTest", "spotlessCheck")
+}
+
 jlink {
     imageZip.set(layout.buildDirectory.file("/distributions/app-${javafx.platform.classifier}.zip"))
     options.set(listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages"))
     launcher {
-        name = "app"
+        name = "quizzr"
+    }
+
+    jpackage {
+        appVersion = "1.0.0"
+        jvmArgs = listOf("-p", ".")
     }
 }
+

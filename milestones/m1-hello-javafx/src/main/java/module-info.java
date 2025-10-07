@@ -1,4 +1,4 @@
-module de.bht.pr_two.quizzr {
+module de.bht.pr.quizzr {
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.web;
@@ -10,8 +10,8 @@ module de.bht.pr_two.quizzr {
   requires eu.hansolo.tilesfx;
   requires com.almasb.fxgl.all;
 
-  opens de.bht.pr_two.quizzr to
+  opens de.bht.pr.quizzr to
       javafx.fxml;
 
-  exports de.bht.pr_two.quizzr;
+  exports de.bht.pr.quizzr;
 }

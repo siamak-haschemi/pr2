@@ -1,4 +1,4 @@
-package de.bht.pr_two.quizzr;
+package de.bht.pr.quizzr;
 
 import javafx.application.Application;
 
