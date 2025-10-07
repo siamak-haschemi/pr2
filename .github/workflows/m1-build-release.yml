@@ -90,12 +90,13 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ inputs.tag }}
-          name: ${{ inputs.name }}
+          name: ${{ inputs.name || inputs.tag }}
           prerelease: ${{ inputs.prerelease }}
           allowUpdates: true
           replacesArtifacts: true
           artifactErrorsFailBuild: true
           artifacts: |
             release-assets/**/*
+            !release-assets/**/*/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
