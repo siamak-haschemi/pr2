@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="de.bht.pr.quizzr.quiz.QuizExecutionController"
+      spacing="12.0">
+  <children>
+    <Label fx:id="execTitleLabel" text="Question 1/10"
+           style="-fx-font-size: 16; -fx-font-weight: bold;" />
+    <Label fx:id="questionText" wrapText="true"/>
+    <VBox fx:id="answersBox" spacing="8.0"/>
+    <HBox spacing="8.0">
+      <children>
+        <Button fx:id="continueButton" text="Continue" onAction="#onContinue" />
+        <Button fx:id="nextButton" text="Next" onAction="#onNext" disable="true" />
+        <Button text="Cancel" onAction="#onCancelQuiz" />
+      </children>
+    </HBox>
+  </children>
+</VBox>
+

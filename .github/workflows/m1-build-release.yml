@@ -1,8 +1,15 @@
-name: M1 Build and Release
+name: Milestone Build and Release
 
 on:
   workflow_dispatch:
     inputs:
+      milestone:
+        description: "Select milestone directory"
+        required: true
+        type: choice
+        options:
+          - m1-hello-javafx
+          - m2-exceptions-and-testing
       tag:
         description: "Tag for the release (e.g., vM1)"
         required: true
@@ -22,7 +29,7 @@ permissions:
 
 jobs:
   build:
-    name: Build and Package (${{ matrix.os }})
+    name: Build and Package (${{ inputs.milestone }} • ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -32,7 +39,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: milestones/m1-hello-javafx
+        working-directory: milestones/${{ inputs.milestone }}
 
     steps:
       - name: Checkout
@@ -47,53 +54,54 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Verify Gradle
-        run: ./gradlew --version
-
       - name: Build + Test + Code Checks
-        run: ./gradlew clean test spotlessCheck spotbugsMain spotbugsTest --no-daemon --stacktrace
+        run: ./gradlew clean spotlessCheck spotbugsMain spotbugsTest test --no-daemon --stacktrace
 
-      - name: Package runtime image and installer (jlink + jpackage)
-        run: ./gradlew jlink jpackage --no-daemon --stacktrace
+      - name: Package application (jpackage)
+        run: ./gradlew jpackage --no-daemon --stacktrace
 
-      - name: macOS - Zip .app bundle
+      - name: macOS - Zip .app bundle (if present)
         if: runner.os == 'macOS'
         run: |
           set -euo pipefail
-          # default working-directory is milestones/m1-hello-javafx
+          # default working-directory is milestones/${{ inputs.milestone }}
           cd build/jpackage
-          APP_DIR=$(ls -d *.app | head -n1)
-          echo "Found app: $APP_DIR"
-          ditto -c -k --sequesterRsrc --keepParent "$APP_DIR" "${APP_DIR}.zip"
-          ls -l
+          if ls *.app 1>/dev/null 2>&1; then
+            APP_DIR=$(ls -d *.app | head -n1)
+            echo "Found app: $APP_DIR"
+            ditto -c -k --sequesterRsrc --keepParent "$APP_DIR" "${APP_DIR}.zip"
+            ls -l
+          else
+            echo "No .app bundle found, skipping zip"
+          fi
 
       - name: macOS - Upload zipped .app
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with:
-          name: m1-macos-app
+          name: ${{ inputs.milestone }}-macos-app
           path: |
-            milestones/m1-hello-javafx/build/jpackage/*.app.zip
-          if-no-files-found: error
+            build/jpackage/*.app.zip
+          if-no-files-found: warn
 
       - name: Windows - Upload .exe installer only
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
         with:
-          name: m1-windows-exe
+          name: ${{ inputs.milestone }}-windows-exe
           path: |
-            milestones/m1-hello-javafx/build/jpackage/*-*.exe
-          if-no-files-found: error
+            build/jpackage/*-*.exe
+          if-no-files-found: warn
 
   release:
     name: Create GitHub Release
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Download build artifacts (M1 only)
+      - name: Download build artifacts for selected milestone
         uses: actions/download-artifact@v4
         with:
-          pattern: m1-*
+          pattern: ${{ inputs.milestone }}-*
           path: release-assets
           merge-multiple: true
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="12.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.bht.pr.quizzr.overview.OverviewController">
+    <children>
+        <Label fx:id="titleLabel" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Quizzr (M2)" />
+        <ListView fx:id="questionList" prefHeight="360.0" VBox.vgrow="ALWAYS" />
+        <Button fx:id="startButton" onAction="#onStartQuiz" text="Start Quiz" />
+    </children>
+</VBox>
