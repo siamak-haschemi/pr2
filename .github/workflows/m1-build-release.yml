@@ -47,39 +47,22 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
+      - name: Verify Gradle
+        run: ./gradlew --version
+
       - name: Build + Test + Code Checks
-        run: ./gradlew clean spotlessCheck spotbugsMain spotbugsTest test --no-daemon --stacktrace
+        run: ./gradlew clean test spotlessCheck spotbugsMain spotbugsTest --no-daemon --stacktrace
 
-      - name: Package application (jpackage)
-        run: ./gradlew jpackage --no-daemon --stacktrace
+      - name: Package runtime image and installer (jlink + jpackage)
+        run: ./gradlew jlink jpackage --no-daemon --stacktrace
 
-      - name: macOS - Zip .app bundle
-        if: runner.os == 'macOS'
-        run: |
-          set -euo pipefail
-          cd milestones/m1-hello-javafx/build/jpackage
-          APP_DIR=$(ls -d *.app | head -n1)
-          echo "Found app: $APP_DIR"
-          ditto -c -k --sequesterRsrc --keepParent "$APP_DIR" "${APP_DIR}.zip"
-          ls -l
-
-      - name: macOS - Upload zipped .app
-        if: runner.os == 'macOS'
+      - name: Upload artifacts (jpackage output)
         uses: actions/upload-artifact@v4
         with:
-          name: m1-macos-app
+          name: m1-${{ matrix.os }}-jpackage
           path: |
-            milestones/m1-hello-javafx/build/jpackage/*.app.zip
-          if-no-files-found: error
-
-      - name: Windows - Upload .exe installer only
-        if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v4
-        with:
-          name: m1-windows-exe
-          path: |
-            milestones/m1-hello-javafx/build/jpackage/*.exe
-          if-no-files-found: error
+            milestones/m1-hello-javafx/build/jpackage/**
+          if-no-files-found: warn
 
   release:
     name: Create GitHub Release
@@ -99,13 +82,12 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ inputs.tag }}
-          name: ${{ inputs.name || inputs.tag }}
+          name: ${{ inputs.name }}
           prerelease: ${{ inputs.prerelease }}
           allowUpdates: true
           replacesArtifacts: true
           artifactErrorsFailBuild: true
           artifacts: |
-            release-assets/**/*.zip
-            release-assets/**/*.exe
+            release-assets/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
