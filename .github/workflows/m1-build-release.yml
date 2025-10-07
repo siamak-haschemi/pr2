@@ -60,7 +60,8 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           set -euo pipefail
-          cd milestones/m1-hello-javafx/build/jpackage
+          # default working-directory is milestones/m1-hello-javafx
+          cd build/jpackage
           APP_DIR=$(ls -d *.app | head -n1)
           echo "Found app: $APP_DIR"
           ditto -c -k --sequesterRsrc --keepParent "$APP_DIR" "${APP_DIR}.zip"
