@@ -4,12 +4,11 @@ import de.bht.pr.quizzr.model.Quiz;
 import de.bht.pr.quizzr.model.QuizFixtures;
 import de.bht.pr.quizzr.overview.OverviewController;
 import de.bht.pr.quizzr.quiz.QuizExecutionController;
+import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
-
-import java.io.IOException;
 
 public class MainController {
   @FXML private StackPane rootStack;

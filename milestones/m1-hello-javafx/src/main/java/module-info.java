@@ -9,5 +9,5 @@ open module de.bht.pr.quizzr {
   requires org.kordamp.bootstrapfx.core;
   requires eu.hansolo.tilesfx;
   requires com.almasb.fxgl.all;
-  // 'open module' allows reflective access for FXML without per-package opens.
+// 'open module' allows reflective access for FXML without per-package opens.
 }

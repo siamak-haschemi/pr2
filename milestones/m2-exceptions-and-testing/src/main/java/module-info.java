@@ -9,5 +9,5 @@ open module de.bht.pr.quizzr {
   requires org.kordamp.bootstrapfx.core;
   requires eu.hansolo.tilesfx;
   requires com.almasb.fxgl.all;
-  // Using 'open module' to simplify reflection needs in class; no per-package opens/exports required.
+// Using 'open module' to simplify reflection needs in class; no per-package opens/exports required.
 }
