@@ -64,14 +64,6 @@ jobs:
             milestones/m1-hello-javafx/build/jpackage/**
           if-no-files-found: warn
 
-      - name: Upload artifacts (runtime image)
-        uses: actions/upload-artifact@v4
-        with:
-          name: m1-${{ matrix.os }}-image
-          path: |
-            milestones/m1-hello-javafx/build/image/**
-          if-no-files-found: warn
-
   release:
     name: Create GitHub Release
     needs: build
@@ -97,6 +89,5 @@ jobs:
           artifactErrorsFailBuild: true
           artifacts: |
             release-assets/**/*
-            !release-assets/**/*/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
