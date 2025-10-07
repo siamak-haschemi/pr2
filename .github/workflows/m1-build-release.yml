@@ -80,6 +80,17 @@ jobs:
         run: |
           echo "Downloaded artifacts:" && ls -R release-assets || true
 
+      - name: Compute artifact file list (zip/exe)
+        id: files
+        run: |
+          set -euo pipefail
+          # Find only files we care about (flattened by download-artifact with merge)
+          FILES=$(find release-assets -type f \( -name "*.zip" -o -name "*.exe" \) -maxdepth 2)
+          echo "Found files:\n$FILES"
+          echo "ARTIFACTS<<EOF" >> $GITHUB_ENV
+          echo "$FILES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
       - name: Create or update GitHub Release
         uses: ncipollo/release-action@v1
         with:
@@ -89,8 +100,6 @@ jobs:
           allowUpdates: true
           replacesArtifacts: true
           artifactErrorsFailBuild: true
-          artifacts: |
-            release-assets/*.zip
-            release-assets/*.exe
+          artifacts: ${{ env.ARTIFACTS }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
