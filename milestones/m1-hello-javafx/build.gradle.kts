@@ -92,8 +92,17 @@ jlink {
     }
 
     jpackage {
+        val os = org.gradle.internal.os.OperatingSystem.current()
+        // Keep only the .app bundle on macOS (no .dmg/.pkg)
+        if (os.isMacOsX) {
+            skipInstaller = true
+        }
+        // Produce only .exe on Windows (no .msi)
+        if (os.isWindows) {
+            installerType = "exe"
+        }
+        imageName = "quizzr"
         appVersion = "1.0.0"
         jvmArgs = listOf("-p", ".")
     }
 }
-
