@@ -1,4 +1,4 @@
-package de.bht.pr.quizzr.swing.service;
+package de.bht.pr.quizzr.swing.validation;
 
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.QuestionType;

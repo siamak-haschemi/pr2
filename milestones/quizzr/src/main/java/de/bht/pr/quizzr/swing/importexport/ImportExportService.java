@@ -1,4 +1,4 @@
-package de.bht.pr.quizzr.swing.service;
+package de.bht.pr.quizzr.swing.importexport;
 
 import de.bht.pr.quizzr.swing.model.Quiz;
 import de.bht.pr.quizzr.swing.model.QuizCollection;

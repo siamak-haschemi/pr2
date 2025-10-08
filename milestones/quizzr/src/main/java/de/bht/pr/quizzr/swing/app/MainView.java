@@ -1,18 +1,22 @@
-package de.bht.pr.quizzr.swing.view;
+package de.bht.pr.quizzr.swing.app;
 
+import de.bht.pr.quizzr.swing.autosave.AutosaveService;
+import de.bht.pr.quizzr.swing.editor.EditorPanel;
+import de.bht.pr.quizzr.swing.editor.EditorViewModel;
+import de.bht.pr.quizzr.swing.home.HomePanel;
+import de.bht.pr.quizzr.swing.home.HomeViewModel;
+import de.bht.pr.quizzr.swing.importexport.ImportExportService;
 import de.bht.pr.quizzr.swing.model.QuizCollection;
-import de.bht.pr.quizzr.swing.service.AutosaveService;
-import de.bht.pr.quizzr.swing.service.ImportExportService;
-import de.bht.pr.quizzr.swing.viewmodel.EditorViewModel;
-import de.bht.pr.quizzr.swing.viewmodel.HomeViewModel;
-import de.bht.pr.quizzr.swing.viewmodel.PracticeViewModel;
+import de.bht.pr.quizzr.swing.practice.PracticePanelNew;
+import de.bht.pr.quizzr.swing.practice.PracticeSummaryDialog;
+import de.bht.pr.quizzr.swing.practice.PracticeViewModel;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import javax.swing.*;
 
-public class MainFrame extends JFrame {
+public class MainView extends JFrame {
   private final HomeViewModel homeViewModel;
   private final EditorViewModel editorViewModel;
   private final PracticeViewModel practiceViewModel;
@@ -24,7 +28,7 @@ public class MainFrame extends JFrame {
   private EditorPanel editorPanel;
   private PracticePanelNew practicePanel;
 
-  public MainFrame(
+  public MainView(
       QuizCollection collection,
       HomeViewModel homeViewModel,
       EditorViewModel editorViewModel,

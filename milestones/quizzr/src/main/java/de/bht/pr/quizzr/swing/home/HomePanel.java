@@ -1,16 +1,16 @@
-package de.bht.pr.quizzr.swing.view;
+package de.bht.pr.quizzr.swing.home;
 
+import de.bht.pr.quizzr.swing.app.MainView;
+import de.bht.pr.quizzr.swing.editor.EditorViewModel;
 import de.bht.pr.quizzr.swing.model.Quiz;
 import de.bht.pr.quizzr.swing.util.Result;
-import de.bht.pr.quizzr.swing.viewmodel.EditorViewModel;
-import de.bht.pr.quizzr.swing.viewmodel.HomeViewModel;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class HomePanel extends JPanel implements PropertyChangeListener {
   private final HomeViewModel viewModel;
@@ -199,7 +199,7 @@ public class HomePanel extends JPanel implements PropertyChangeListener {
     editorViewModel.setCurrentQuiz(selected);
     SwingUtilities.invokeLater(
         () -> {
-          MainFrame frame = (MainFrame) SwingUtilities.getWindowAncestor(this);
+          MainView frame = (MainView) SwingUtilities.getWindowAncestor(this);
           if (frame != null) {
             frame.switchToEditorTab();
           }
@@ -229,7 +229,7 @@ public class HomePanel extends JPanel implements PropertyChangeListener {
     }
     SwingUtilities.invokeLater(
         () -> {
-          MainFrame frame = (MainFrame) SwingUtilities.getWindowAncestor(this);
+          MainView frame = (MainView) SwingUtilities.getWindowAncestor(this);
           if (frame != null) {
             frame.startPracticeWithQuiz(selected);
           }

@@ -1,8 +1,7 @@
-package de.bht.pr.quizzr.swing.service;
+package de.bht.pr.quizzr.swing.autosave;
 
 import de.bht.pr.quizzr.swing.model.QuizCollection;
 import de.bht.pr.quizzr.swing.persistence.JsonRepository;
-import de.bht.pr.quizzr.swing.util.Debouncer;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

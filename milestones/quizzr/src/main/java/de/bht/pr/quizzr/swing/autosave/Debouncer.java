@@ -1,4 +1,4 @@
-package de.bht.pr.quizzr.swing.util;
+package de.bht.pr.quizzr.swing.autosave;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

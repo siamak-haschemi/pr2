@@ -1,4 +1,4 @@
-package de.bht.pr.quizzr.swing.view;
+package de.bht.pr.quizzr.swing.practice;
 
 import de.bht.pr.quizzr.swing.model.Quiz;
 import java.awt.BorderLayout;

@@ -1,10 +1,10 @@
-package de.bht.pr.quizzr.swing.view;
+package de.bht.pr.quizzr.swing.editor;
 
 import de.bht.pr.quizzr.swing.model.Answer;
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.QuestionType;
-import de.bht.pr.quizzr.swing.service.ValidationService;
 import de.bht.pr.quizzr.swing.util.Result;
+import de.bht.pr.quizzr.swing.validation.ValidationService;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;

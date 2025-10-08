@@ -1,8 +1,8 @@
-package de.bht.pr.quizzr.swing.view;
+package de.bht.pr.quizzr.swing.practice;
 
+import de.bht.pr.quizzr.swing.app.MainView;
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.Quiz;
-import de.bht.pr.quizzr.swing.viewmodel.PracticeViewModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -119,7 +119,7 @@ public class PracticeSummaryDialog extends JDialog {
     dispose();
 
     // Start new practice session
-    MainFrame frame = (MainFrame) SwingUtilities.getWindowAncestor(getParent());
+    MainView frame = (MainView) SwingUtilities.getWindowAncestor(getParent());
     if (frame != null) {
       frame.startPracticeWithQuiz(retryQuiz);
     }

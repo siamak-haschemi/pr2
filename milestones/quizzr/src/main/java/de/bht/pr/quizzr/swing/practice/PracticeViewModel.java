@@ -1,4 +1,4 @@
-package de.bht.pr.quizzr.swing.viewmodel;
+package de.bht.pr.quizzr.swing.practice;
 
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.Quiz;

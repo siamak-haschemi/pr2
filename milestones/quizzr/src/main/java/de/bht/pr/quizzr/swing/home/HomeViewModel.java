@@ -1,10 +1,10 @@
-package de.bht.pr.quizzr.swing.viewmodel;
+package de.bht.pr.quizzr.swing.home;
 
+import de.bht.pr.quizzr.swing.autosave.AutosaveService;
 import de.bht.pr.quizzr.swing.model.Quiz;
 import de.bht.pr.quizzr.swing.model.QuizCollection;
-import de.bht.pr.quizzr.swing.service.AutosaveService;
-import de.bht.pr.quizzr.swing.service.ValidationService;
 import de.bht.pr.quizzr.swing.util.Result;
+import de.bht.pr.quizzr.swing.validation.ValidationService;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;

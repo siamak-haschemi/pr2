@@ -1,17 +1,16 @@
 package de.bht.pr.quizzr.swing.app;
 
 import com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme;
+import de.bht.pr.quizzr.swing.autosave.AutosaveService;
+import de.bht.pr.quizzr.swing.editor.EditorViewModel;
+import de.bht.pr.quizzr.swing.home.HomeViewModel;
+import de.bht.pr.quizzr.swing.importexport.ImportExportService;
 import de.bht.pr.quizzr.swing.model.QuizCollection;
 import de.bht.pr.quizzr.swing.persistence.FileLockManager;
 import de.bht.pr.quizzr.swing.persistence.JsonRepository;
 import de.bht.pr.quizzr.swing.persistence.PathsProvider;
-import de.bht.pr.quizzr.swing.service.AutosaveService;
-import de.bht.pr.quizzr.swing.service.ImportExportService;
-import de.bht.pr.quizzr.swing.service.ValidationService;
-import de.bht.pr.quizzr.swing.view.MainFrame;
-import de.bht.pr.quizzr.swing.viewmodel.EditorViewModel;
-import de.bht.pr.quizzr.swing.viewmodel.HomeViewModel;
-import de.bht.pr.quizzr.swing.viewmodel.PracticeViewModel;
+import de.bht.pr.quizzr.swing.practice.PracticeViewModel;
+import de.bht.pr.quizzr.swing.validation.ValidationService;
 import java.io.IOException;
 import javax.swing.*;
 
@@ -93,8 +92,8 @@ public class AppBootstrap {
     QuizCollection finalCollection = collection;
     SwingUtilities.invokeLater(
         () -> {
-          MainFrame mainFrame =
-              new MainFrame(
+          MainView mainFrame =
+              new MainView(
                   finalCollection,
                   homeViewModel,
                   editorViewModel,

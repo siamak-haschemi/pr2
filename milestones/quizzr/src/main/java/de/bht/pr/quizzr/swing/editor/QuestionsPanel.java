@@ -1,15 +1,15 @@
-package de.bht.pr.quizzr.swing.view;
+package de.bht.pr.quizzr.swing.editor;
 
+import de.bht.pr.quizzr.swing.app.MainView;
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.Quiz;
-import de.bht.pr.quizzr.swing.viewmodel.EditorViewModel;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.*;
 
-public class EditorPanel extends JPanel implements PropertyChangeListener {
+public class QuestionsPanel extends JPanel implements PropertyChangeListener {
   private final EditorViewModel viewModel;
 
   private JLabel quizNameLabel;
@@ -21,7 +21,7 @@ public class EditorPanel extends JPanel implements PropertyChangeListener {
   private JButton moveDownButton;
   private JButton editQuestionButton;
 
-  public EditorPanel(EditorViewModel viewModel) {
+  public QuestionsPanel(EditorViewModel viewModel) {
     this.viewModel = viewModel;
     this.viewModel.addPropertyChangeListener(this);
 
@@ -103,12 +103,11 @@ public class EditorPanel extends JPanel implements PropertyChangeListener {
     }
     Question question = viewModel.addQuestion();
     refreshList();
-    // In a full implementation, we'd open a dialog to edit the question
-    JOptionPane.showMessageDialog(
-        this,
-        "Question added. Use 'Edit Question' to configure it.",
-        "Question Added",
-        JOptionPane.INFORMATION_MESSAGE);
+    // Auto-open editor for new question
+    if (question != null) {
+      questionList.setSelectedValue(question, true);
+      editQuestion();
+    }
   }
 
   private void editQuestion() {
@@ -122,7 +121,7 @@ public class EditorPanel extends JPanel implements PropertyChangeListener {
       return;
     }
 
-    MainFrame frame = (MainFrame) SwingUtilities.getWindowAncestor(this);
+    MainView frame = (MainView) SwingUtilities.getWindowAncestor(this);
     QuestionEditorDialog dialog =
         new QuestionEditorDialog(frame, selected, viewModel.getValidationService());
     dialog.setVisible(true);
@@ -155,6 +154,7 @@ public class EditorPanel extends JPanel implements PropertyChangeListener {
     if (selected != null) {
       viewModel.moveQuestionUp(selected);
       refreshList();
+      questionList.setSelectedValue(selected, true);
     }
   }
 
@@ -163,6 +163,7 @@ public class EditorPanel extends JPanel implements PropertyChangeListener {
     if (selected != null) {
       viewModel.moveQuestionDown(selected);
       refreshList();
+      questionList.setSelectedValue(selected, true);
     }
   }
 
@@ -180,7 +181,7 @@ public class EditorPanel extends JPanel implements PropertyChangeListener {
   private void updateEditorUI() {
     Quiz quiz = viewModel.getCurrentQuiz();
     if (quiz != null) {
-      quizNameLabel.setText("Editing: " + quiz.getName());
+      quizNameLabel.setText("Questions for: " + quiz.getName());
     } else {
       quizNameLabel.setText("No quiz selected");
     }
@@ -199,6 +200,10 @@ public class EditorPanel extends JPanel implements PropertyChangeListener {
     moveDownButton.setEnabled(hasSelection);
   }
 
+  public void deleteQuestionAction() {
+    removeQuestion();
+  }
+
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
     SwingUtilities.invokeLater(
@@ -209,10 +214,6 @@ public class EditorPanel extends JPanel implements PropertyChangeListener {
             refreshList();
           }
         });
-  }
-
-  public void deleteQuestionAction() {
-    removeQuestion();
   }
 
   private static class QuestionListCellRenderer extends DefaultListCellRenderer {
