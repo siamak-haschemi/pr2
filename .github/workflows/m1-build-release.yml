@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - m1-hello-javafx
+          - m1-hello-swing-FlatLaf
           - m2-exceptions-and-testing
       tag:
         description: "Tag for the release (e.g., vM1)"
