@@ -34,11 +34,14 @@ application {
 }
 
 dependencies {
-    implementation("com.jetbrains.intellij.java:java-compiler-ant-tasks:252.26830.108")
+    compileOnly("com.jetbrains.intellij.java:java-compiler-ant-tasks:252.26830.108")
     runtimeOnly("com.jetbrains.intellij.java:java-gui-forms-rt:252.26830.108")
 
     implementation("com.formdev:flatlaf:3.4.1")
     implementation("com.formdev:flatlaf-intellij-themes:3.4.1")
+
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
