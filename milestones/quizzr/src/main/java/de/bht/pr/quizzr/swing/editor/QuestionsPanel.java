@@ -122,8 +122,7 @@ public class QuestionsPanel extends JPanel implements PropertyChangeListener {
     }
 
     MainView frame = (MainView) SwingUtilities.getWindowAncestor(this);
-    QuestionEditorDialog dialog =
-        new QuestionEditorDialog(frame, selected, viewModel.getValidationService());
+    QuestionEditorDialog dialog = new QuestionEditorDialog(frame, selected, viewModel);
     dialog.setVisible(true);
 
     if (dialog.isConfirmed()) {

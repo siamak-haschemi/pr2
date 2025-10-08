@@ -35,4 +35,8 @@ public class Answer {
   public void setText(String text) {
     this.text = text;
   }
+
+  public Answer deepCopy() {
+    return new Answer(this.text);
+  }
 }

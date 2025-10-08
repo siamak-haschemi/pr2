@@ -67,4 +67,28 @@ public class Question {
   public void setCorrectAnswerIds(Set<UUID> correctAnswerIds) {
     this.correctAnswerIds = correctAnswerIds;
   }
+
+  public Question deepCopy() {
+    Question copy = new Question();
+    copy.setText(this.text);
+    copy.setType(this.type);
+
+    // Deep copy answers and build mapping of old ID to new ID
+    java.util.Map<UUID, UUID> idMapping = new java.util.HashMap<>();
+    for (Answer answer : this.answers) {
+      Answer answerCopy = answer.deepCopy();
+      copy.getAnswers().add(answerCopy);
+      idMapping.put(answer.getId(), answerCopy.getId());
+    }
+
+    // Map correct answer IDs from old to new
+    for (UUID oldId : this.correctAnswerIds) {
+      UUID newId = idMapping.get(oldId);
+      if (newId != null) {
+        copy.getCorrectAnswerIds().add(newId);
+      }
+    }
+
+    return copy;
+  }
 }

@@ -1,8 +1,9 @@
 package de.bht.pr.quizzr.swing.app;
 
 import de.bht.pr.quizzr.swing.autosave.AutosaveService;
-import de.bht.pr.quizzr.swing.editor.EditorPanel;
 import de.bht.pr.quizzr.swing.editor.EditorViewModel;
+import de.bht.pr.quizzr.swing.editor.QuestionsPanel;
+import de.bht.pr.quizzr.swing.editor.QuizEditorPanel;
 import de.bht.pr.quizzr.swing.home.HomePanel;
 import de.bht.pr.quizzr.swing.home.HomeViewModel;
 import de.bht.pr.quizzr.swing.importexport.ImportExportService;
@@ -25,7 +26,9 @@ public class MainView extends JFrame {
 
   private JTabbedPane tabbedPane;
   private HomePanel homePanel;
-  private EditorPanel editorPanel;
+  private JPanel editorPanel;
+  private QuizEditorPanel quizEditorPanel;
+  private QuestionsPanel questionsPanel;
   private PracticePanelNew practicePanel;
 
   public MainView(
@@ -56,7 +59,16 @@ public class MainView extends JFrame {
     tabbedPane = new JTabbedPane();
 
     homePanel = new HomePanel(homeViewModel, editorViewModel);
-    editorPanel = new EditorPanel(editorViewModel);
+
+    // Create editor sub-tabs
+    JTabbedPane editorTabs = new JTabbedPane();
+    quizEditorPanel = new QuizEditorPanel(editorViewModel, homeViewModel);
+    questionsPanel = new QuestionsPanel(editorViewModel);
+    editorTabs.addTab("Quiz Properties", quizEditorPanel);
+    editorTabs.addTab("Questions", questionsPanel);
+    editorPanel = new JPanel(new BorderLayout());
+    editorPanel.add(editorTabs, BorderLayout.CENTER);
+
     practicePanel = new PracticePanelNew(practiceViewModel);
 
     tabbedPane.addTab("Home", homePanel);
@@ -121,13 +133,11 @@ public class MainView extends JFrame {
         new javax.swing.filechooser.FileNameExtensionFilter("JSON files", "json"));
     if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
       try {
+        de.bht.pr.quizzr.swing.model.QuizCollection fullCollection = homeViewModel.getCollection();
         de.bht.pr.quizzr.swing.util.Result<de.bht.pr.quizzr.swing.model.QuizCollection, String>
             result =
                 importExportService.importFromFile(
-                    chooser.getSelectedFile().toPath(),
-                    homeViewModel.getFilteredQuizzes().isEmpty()
-                        ? new de.bht.pr.quizzr.swing.model.QuizCollection()
-                        : getCollectionFromViewModel());
+                    chooser.getSelectedFile().toPath(), fullCollection);
 
         if (result.isFailure()) {
           JOptionPane.showMessageDialog(
@@ -141,14 +151,14 @@ public class MainView extends JFrame {
         de.bht.pr.quizzr.swing.model.QuizCollection imported = result.getValue().orElse(null);
         if (imported != null) {
           de.bht.pr.quizzr.swing.model.QuizCollection merged =
-              importExportService.mergeCollections(getCollectionFromViewModel(), imported);
+              importExportService.mergeCollections(fullCollection, imported);
 
           // Update the collection
-          getCollectionFromViewModel().getQuizzes().clear();
-          getCollectionFromViewModel().getQuizzes().addAll(merged.getQuizzes());
+          fullCollection.getQuizzes().clear();
+          fullCollection.getQuizzes().addAll(merged.getQuizzes());
 
           homeViewModel.refresh();
-          autosaveService.scheduleAutosave(getCollectionFromViewModel());
+          autosaveService.scheduleAutosave(fullCollection);
 
           JOptionPane.showMessageDialog(
               this,
@@ -171,7 +181,7 @@ public class MainView extends JFrame {
     if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
       try {
         importExportService.exportToFile(
-            getCollectionFromViewModel(), chooser.getSelectedFile().toPath());
+            homeViewModel.getCollection(), chooser.getSelectedFile().toPath());
         JOptionPane.showMessageDialog(
             this,
             "Successfully exported to " + chooser.getSelectedFile().getName(),
@@ -182,13 +192,6 @@ public class MainView extends JFrame {
             this, "Export failed: " + ex.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
       }
     }
-  }
-
-  private de.bht.pr.quizzr.swing.model.QuizCollection getCollectionFromViewModel() {
-    de.bht.pr.quizzr.swing.model.QuizCollection collection =
-        new de.bht.pr.quizzr.swing.model.QuizCollection();
-    collection.getQuizzes().addAll(homeViewModel.getFilteredQuizzes());
-    return collection;
   }
 
   private void exit() {
@@ -273,7 +276,7 @@ public class MainView extends JFrame {
                 if (tabbedPane.getSelectedComponent() == homePanel) {
                   homePanel.deleteQuizAction();
                 } else if (tabbedPane.getSelectedComponent() == editorPanel) {
-                  editorPanel.deleteQuestionAction();
+                  questionsPanel.deleteQuestionAction();
                 }
               }
             });

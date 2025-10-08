@@ -15,6 +15,7 @@ import javax.swing.table.TableCellRenderer;
 public class QuestionEditorDialog extends JDialog {
   private final Question question;
   private final ValidationService validationService;
+  private final EditorViewModel editorViewModel;
 
   private JTextArea questionTextArea;
   private JComboBox<QuestionType> typeComboBox;
@@ -28,11 +29,11 @@ public class QuestionEditorDialog extends JDialog {
 
   private boolean confirmed = false;
 
-  public QuestionEditorDialog(
-      JFrame parent, Question question, ValidationService validationService) {
+  public QuestionEditorDialog(JFrame parent, Question question, EditorViewModel editorViewModel) {
     super(parent, "Edit Question", true);
     this.question = question;
-    this.validationService = validationService;
+    this.editorViewModel = editorViewModel;
+    this.validationService = editorViewModel.getValidationService();
 
     initializeUI();
     loadQuestion();
@@ -208,7 +209,7 @@ public class QuestionEditorDialog extends JDialog {
     question.setText(questionTextArea.getText());
     question.setType((QuestionType) typeComboBox.getSelectedItem());
 
-    Result<Void, String> result = validationService.validateQuestion(question);
+    Result<Void, String> result = editorViewModel.validateAndSaveQuestion(question);
     if (result.isFailure()) {
       validationLabel.setText(result.getError().orElse("Validation failed"));
       return false;

@@ -64,6 +64,7 @@ public class EditorViewModel {
     question.setText("");
     currentQuiz.getQuestions().add(question);
     pcs.firePropertyChange("questions", null, currentQuiz.getQuestions());
+    triggerAutosave();
     return question;
   }
 

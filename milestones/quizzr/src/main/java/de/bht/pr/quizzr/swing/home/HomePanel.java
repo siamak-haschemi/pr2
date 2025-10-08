@@ -169,7 +169,14 @@ public class HomePanel extends JPanel implements PropertyChangeListener {
     if (selected == null) {
       return;
     }
-    viewModel.duplicateQuiz(selected);
+    Result<Quiz, String> result = viewModel.duplicateQuiz(selected);
+    if (result.isFailure()) {
+      JOptionPane.showMessageDialog(
+          this,
+          result.getError().orElse("Failed to duplicate quiz"),
+          "Error",
+          JOptionPane.ERROR_MESSAGE);
+    }
     refreshList();
   }
 

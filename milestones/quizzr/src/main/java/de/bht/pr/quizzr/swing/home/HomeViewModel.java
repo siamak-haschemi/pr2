@@ -104,13 +104,27 @@ public class HomeViewModel {
     return Result.success(null);
   }
 
-  public Quiz duplicateQuiz(Quiz original) {
-    Quiz duplicate = new Quiz(original.getName() + " (copy)");
-    duplicate.setQuestions(new ArrayList<>(original.getQuestions()));
+  public Result<Quiz, String> duplicateQuiz(Quiz original) {
+    String baseName = original.getName() + " (copy)";
+    String newName = baseName;
+    int counter = 1;
+
+    // Find unique name
+    while (validationService.validateQuizName(newName, collection, null).isFailure()) {
+      newName = baseName + " " + counter;
+      counter++;
+    }
+
+    Quiz duplicate = new Quiz(newName);
+    // Deep copy all questions
+    for (de.bht.pr.quizzr.swing.model.Question question : original.getQuestions()) {
+      duplicate.getQuestions().add(question.deepCopy());
+    }
+
     collection.getQuizzes().add(duplicate);
     updateFilter();
     autosaveService.scheduleAutosave(collection);
-    return duplicate;
+    return Result.success(duplicate);
   }
 
   public void deleteQuiz(Quiz quiz) {
@@ -128,5 +142,9 @@ public class HomeViewModel {
 
   public void refresh() {
     updateFilter();
+  }
+
+  public QuizCollection getCollection() {
+    return collection;
   }
 }
