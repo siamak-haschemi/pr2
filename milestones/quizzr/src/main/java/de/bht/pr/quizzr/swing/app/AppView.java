@@ -1,8 +1,8 @@
 package de.bht.pr.quizzr.swing.app;
 
-import de.bht.pr.quizzr.swing.editor.QuestionsPanel;
-import de.bht.pr.quizzr.swing.editor.QuizEditorPanel;
-import de.bht.pr.quizzr.swing.editor.QuizEditorViewModel;
+import de.bht.pr.quizzr.swing.question.QuestionsPanel;
+import de.bht.pr.quizzr.swing.question.QuizEditorPanel;
+import de.bht.pr.quizzr.swing.question.QuizEditorViewModel;
 import de.bht.pr.quizzr.swing.importexport.ImportExportView;
 import de.bht.pr.quizzr.swing.importexport.ImportExportViewModel;
 import de.bht.pr.quizzr.swing.practice.PracticePanelNew;
@@ -59,7 +59,7 @@ public class AppView extends JFrame {
 
     homePanel = new QuizManagerView(quizManagerViewModel, quizEditorViewModel);
 
-    importExportView = new ImportExportView(importExportViewModel, homePanel);
+    importExportView = new ImportExportView(importExportViewModel, this);
 
     // Create editor sub-tabs
     JTabbedPane editorTabs = new JTabbedPane();

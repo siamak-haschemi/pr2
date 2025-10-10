@@ -1,4 +1,4 @@
-package de.bht.pr.quizzr.swing.editor;
+package de.bht.pr.quizzr.swing.question;
 
 import de.bht.pr.quizzr.swing.quiz.QuizManagerViewModel;
 import de.bht.pr.quizzr.swing.model.Quiz;

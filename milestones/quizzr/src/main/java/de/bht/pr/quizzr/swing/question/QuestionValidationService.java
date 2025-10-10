@@ -1,33 +1,10 @@
-package de.bht.pr.quizzr.swing.validation;
+package de.bht.pr.quizzr.swing.question;
 
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.QuestionType;
-import de.bht.pr.quizzr.swing.model.Quiz;
-import de.bht.pr.quizzr.swing.model.QuizCollection;
 import de.bht.pr.quizzr.swing.util.Result;
-import java.util.Locale;
 
-public class ValidationService {
-
-  public Result<Void, String> validateQuizName(
-      String name, QuizCollection collection, Quiz currentQuiz) {
-    if (name == null || name.trim().isEmpty()) {
-      return Result.failure("Quiz name cannot be empty");
-    }
-
-    String normalizedName = name.trim().toLowerCase(Locale.ROOT);
-    for (Quiz quiz : collection.getQuizzes()) {
-      if (currentQuiz != null && quiz.getId().equals(currentQuiz.getId())) {
-        continue;
-      }
-      if (quiz.getName() != null
-          && quiz.getName().trim().toLowerCase(Locale.ROOT).equals(normalizedName)) {
-        return Result.failure("Quiz name already exists (case-insensitive)");
-      }
-    }
-
-    return Result.success(null);
-  }
+public class QuestionValidationService {
 
   public Result<Void, String> validateQuestion(Question question) {
     if (question.getText() == null || question.getText().trim().isEmpty()) {

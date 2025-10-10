@@ -3,7 +3,7 @@ package de.bht.pr.quizzr.swing.quiz;
 import de.bht.pr.quizzr.swing.model.Quiz;
 import de.bht.pr.quizzr.swing.model.QuizCollection;
 import de.bht.pr.quizzr.swing.util.Result;
-import de.bht.pr.quizzr.swing.validation.ValidationService;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -15,15 +15,15 @@ public class QuizManagerViewModel {
   private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
   private final QuizCollection collection;
   private final QuizzRepository repository;
-  private final ValidationService validationService;
+  private final QuizValidationService quizValidationService;
 
   private List<Quiz> filteredQuizzes;
   private String searchQuery = "";
   private Quiz selectedQuiz;
 
-  public QuizManagerViewModel(QuizzRepository repository, ValidationService validationService) {
+  public QuizManagerViewModel(QuizzRepository repository, QuizValidationService quizValidationService) {
     this.repository = repository;
-    this.validationService = validationService;
+    this.quizValidationService = quizValidationService;
     this.collection = repository.get();
     this.filteredQuizzes = new ArrayList<>(collection.getQuizzes());
   }
@@ -68,7 +68,7 @@ public class QuizManagerViewModel {
   }
 
   public Result<Quiz, String> createQuiz(String name) {
-    Result<Void, String> validation = validationService.validateQuizName(name, collection, null);
+    Result<Void, String> validation = quizValidationService.validateQuizName(name, collection, null);
     if (validation.isFailure()) {
       return Result.failure(validation.getError().orElse("Invalid quiz name"));
     }
@@ -80,7 +80,7 @@ public class QuizManagerViewModel {
   }
 
   public Result<Void, String> renameQuiz(Quiz quiz, String newName) {
-    Result<Void, String> validation = validationService.validateQuizName(newName, collection, quiz);
+    Result<Void, String> validation = quizValidationService.validateQuizName(newName, collection, quiz);
     if (validation.isFailure()) {
       return validation;
     }
@@ -96,7 +96,7 @@ public class QuizManagerViewModel {
     int counter = 1;
 
     // Find unique name
-    while (validationService.validateQuizName(newName, collection, null).isFailure()) {
+    while (quizValidationService.validateQuizName(newName, collection, null).isFailure()) {
       newName = baseName + " " + counter;
       counter++;
     }

@@ -4,14 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme;
-import de.bht.pr.quizzr.swing.editor.QuizEditorViewModel;
 import de.bht.pr.quizzr.swing.importexport.ImportExportViewModel;
 import de.bht.pr.quizzr.swing.practice.PracticeViewModel;
+import de.bht.pr.quizzr.swing.question.QuestionValidationService;
+import de.bht.pr.quizzr.swing.question.QuizEditorViewModel;
 import de.bht.pr.quizzr.swing.quiz.QuizManagerViewModel;
+import de.bht.pr.quizzr.swing.quiz.QuizValidationService;
 import de.bht.pr.quizzr.swing.quiz.QuizzRepository;
 import de.bht.pr.quizzr.swing.util.PathsProvider;
-import de.bht.pr.quizzr.swing.validation.ValidationService;
-
 import javax.swing.*;
 
 public class AppBootstrap {
@@ -35,11 +35,13 @@ public class AppBootstrap {
     repository.loadFromFile();
 
     // Initialize services
-    ValidationService validationService = new ValidationService();
+    QuestionValidationService questionValidationService = new QuestionValidationService();
+    QuizValidationService quizValidationService = new QuizValidationService();
 
     // Initialize view models
-    QuizManagerViewModel homeViewModel = new QuizManagerViewModel(repository, validationService);
-    QuizEditorViewModel editorViewModel = new QuizEditorViewModel(validationService);
+    QuizManagerViewModel homeViewModel =
+        new QuizManagerViewModel(repository, quizValidationService);
+    QuizEditorViewModel editorViewModel = new QuizEditorViewModel(questionValidationService);
     PracticeViewModel practiceViewModel = new PracticeViewModel();
     ImportExportViewModel importExportViewModel = new ImportExportViewModel(repository);
 

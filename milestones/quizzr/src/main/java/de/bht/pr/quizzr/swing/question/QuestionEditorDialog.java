@@ -1,10 +1,10 @@
-package de.bht.pr.quizzr.swing.editor;
+package de.bht.pr.quizzr.swing.question;
 
 import de.bht.pr.quizzr.swing.model.Answer;
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.QuestionType;
 import de.bht.pr.quizzr.swing.util.Result;
-import de.bht.pr.quizzr.swing.validation.ValidationService;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
@@ -14,7 +14,7 @@ import javax.swing.table.TableCellRenderer;
 
 public class QuestionEditorDialog extends JDialog {
   private final Question question;
-  private final ValidationService validationService;
+  private final QuestionValidationService validationService;
   private final QuizEditorViewModel editorViewModel;
 
   private JTextArea questionTextArea;

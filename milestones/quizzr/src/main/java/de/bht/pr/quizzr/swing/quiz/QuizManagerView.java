@@ -1,7 +1,7 @@
 package de.bht.pr.quizzr.swing.quiz;
 
 import de.bht.pr.quizzr.swing.app.AppView;
-import de.bht.pr.quizzr.swing.editor.QuizEditorViewModel;
+import de.bht.pr.quizzr.swing.question.QuizEditorViewModel;
 import de.bht.pr.quizzr.swing.model.Quiz;
 import de.bht.pr.quizzr.swing.util.Result;
 

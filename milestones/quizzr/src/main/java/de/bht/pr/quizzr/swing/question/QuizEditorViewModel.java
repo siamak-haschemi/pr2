@@ -1,25 +1,25 @@
-package de.bht.pr.quizzr.swing.editor;
+package de.bht.pr.quizzr.swing.question;
 
 import de.bht.pr.quizzr.swing.model.Answer;
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.Quiz;
 import de.bht.pr.quizzr.swing.util.Result;
-import de.bht.pr.quizzr.swing.validation.ValidationService;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 
 public class QuizEditorViewModel {
   private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-  private final ValidationService validationService;
+  private final QuestionValidationService validationService;
 
   private Quiz currentQuiz;
 
-  public QuizEditorViewModel(ValidationService validationService) {
+  public QuizEditorViewModel(QuestionValidationService validationService) {
     this.validationService = validationService;
   }
 
-  public ValidationService getValidationService() {
+  public QuestionValidationService getValidationService() {
     return validationService;
   }
 
