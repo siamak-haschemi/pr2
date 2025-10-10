@@ -15,7 +15,7 @@ import javax.swing.table.TableCellRenderer;
 public class QuestionEditorDialog extends JDialog {
   private final Question question;
   private final ValidationService validationService;
-  private final EditorViewModel editorViewModel;
+  private final QuizEditorViewModel editorViewModel;
 
   private JTextArea questionTextArea;
   private JComboBox<QuestionType> typeComboBox;
@@ -29,7 +29,7 @@ public class QuestionEditorDialog extends JDialog {
 
   private boolean confirmed = false;
 
-  public QuestionEditorDialog(JFrame parent, Question question, EditorViewModel editorViewModel) {
+  public QuestionEditorDialog(JFrame parent, Question question, QuizEditorViewModel editorViewModel) {
     super(parent, "Edit Question", true);
     this.question = question;
     this.editorViewModel = editorViewModel;

@@ -1,6 +1,6 @@
 package de.bht.pr.quizzr.swing.editor;
 
-import de.bht.pr.quizzr.swing.home.HomeViewModel;
+import de.bht.pr.quizzr.swing.quiz.QuizManagerViewModel;
 import de.bht.pr.quizzr.swing.model.Quiz;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -11,8 +11,8 @@ import java.beans.PropertyChangeListener;
 import javax.swing.*;
 
 public class QuizEditorPanel extends JPanel implements PropertyChangeListener {
-  private final EditorViewModel viewModel;
-  private final HomeViewModel homeViewModel;
+  private final QuizEditorViewModel viewModel;
+  private final QuizManagerViewModel homeViewModel;
 
   private JLabel titleLabel;
   private JTextField nameField;
@@ -20,7 +20,7 @@ public class QuizEditorPanel extends JPanel implements PropertyChangeListener {
   private JButton saveButton;
   private JButton cancelButton;
 
-  public QuizEditorPanel(EditorViewModel viewModel, HomeViewModel homeViewModel) {
+  public QuizEditorPanel(QuizEditorViewModel viewModel, QuizManagerViewModel homeViewModel) {
     this.viewModel = viewModel;
     this.homeViewModel = homeViewModel;
     this.viewModel.addPropertyChangeListener(this);

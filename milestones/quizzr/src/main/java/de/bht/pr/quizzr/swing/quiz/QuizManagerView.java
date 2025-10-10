@@ -1,19 +1,20 @@
-package de.bht.pr.quizzr.swing.home;
+package de.bht.pr.quizzr.swing.quiz;
 
-import de.bht.pr.quizzr.swing.app.MainView;
-import de.bht.pr.quizzr.swing.editor.EditorViewModel;
+import de.bht.pr.quizzr.swing.app.AppView;
+import de.bht.pr.quizzr.swing.editor.QuizEditorViewModel;
 import de.bht.pr.quizzr.swing.model.Quiz;
 import de.bht.pr.quizzr.swing.util.Result;
-import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-public class HomePanel extends JPanel implements PropertyChangeListener {
-  private final HomeViewModel viewModel;
-  private final EditorViewModel editorViewModel;
+public class QuizManagerView extends JPanel implements PropertyChangeListener {
+  private final QuizManagerViewModel viewModel;
+  private final QuizEditorViewModel editorViewModel;
 
   private JTextField searchField;
   private JList<Quiz> quizList;
@@ -25,7 +26,7 @@ public class HomePanel extends JPanel implements PropertyChangeListener {
   private JButton editButton;
   private JButton practiceButton;
 
-  public HomePanel(HomeViewModel viewModel, EditorViewModel editorViewModel) {
+  public QuizManagerView(QuizManagerViewModel viewModel, QuizEditorViewModel editorViewModel) {
     this.viewModel = viewModel;
     this.editorViewModel = editorViewModel;
     this.viewModel.addPropertyChangeListener(this);
@@ -205,7 +206,7 @@ public class HomePanel extends JPanel implements PropertyChangeListener {
     editorViewModel.setCurrentQuiz(selected);
     SwingUtilities.invokeLater(
         () -> {
-          MainView frame = (MainView) SwingUtilities.getWindowAncestor(this);
+          AppView frame = (AppView) SwingUtilities.getWindowAncestor(this);
           if (frame != null) {
             frame.switchToEditorTab();
           }
@@ -235,7 +236,7 @@ public class HomePanel extends JPanel implements PropertyChangeListener {
     }
     SwingUtilities.invokeLater(
         () -> {
-          MainView frame = (MainView) SwingUtilities.getWindowAncestor(this);
+          AppView frame = (AppView) SwingUtilities.getWindowAncestor(this);
           if (frame != null) {
             frame.startPracticeWithQuiz(selected);
           }

@@ -1,6 +1,6 @@
 package de.bht.pr.quizzr.swing.editor;
 
-import de.bht.pr.quizzr.swing.app.MainView;
+import de.bht.pr.quizzr.swing.app.AppView;
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.Quiz;
 import java.awt.BorderLayout;
@@ -10,7 +10,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.*;
 
 public class QuestionsPanel extends JPanel implements PropertyChangeListener {
-  private final EditorViewModel viewModel;
+  private final QuizEditorViewModel viewModel;
 
   private JLabel quizNameLabel;
   private JList<Question> questionList;
@@ -21,7 +21,7 @@ public class QuestionsPanel extends JPanel implements PropertyChangeListener {
   private JButton moveDownButton;
   private JButton editQuestionButton;
 
-  public QuestionsPanel(EditorViewModel viewModel) {
+  public QuestionsPanel(QuizEditorViewModel viewModel) {
     this.viewModel = viewModel;
     this.viewModel.addPropertyChangeListener(this);
 
@@ -121,7 +121,7 @@ public class QuestionsPanel extends JPanel implements PropertyChangeListener {
       return;
     }
 
-    MainView frame = (MainView) SwingUtilities.getWindowAncestor(this);
+    AppView frame = (AppView) SwingUtilities.getWindowAncestor(this);
     QuestionEditorDialog dialog = new QuestionEditorDialog(frame, selected, viewModel);
     dialog.setVisible(true);
 

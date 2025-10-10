@@ -9,13 +9,13 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collections;
 
-public class EditorViewModel {
+public class QuizEditorViewModel {
   private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
   private final ValidationService validationService;
 
   private Quiz currentQuiz;
 
-  public EditorViewModel(ValidationService validationService) {
+  public QuizEditorViewModel(ValidationService validationService) {
     this.validationService = validationService;
   }
 

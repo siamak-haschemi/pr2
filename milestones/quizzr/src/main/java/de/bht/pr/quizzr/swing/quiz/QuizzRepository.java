@@ -1,44 +1,48 @@
-package de.bht.pr.quizzr.swing.persistence;
+package de.bht.pr.quizzr.swing.quiz;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.bht.pr.quizzr.swing.model.QuizCollection;
+import de.bht.pr.quizzr.swing.util.PathsProvider;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class JsonRepository {
+public class QuizzRepository {
   private final PathsProvider pathsProvider;
   private final ObjectMapper objectMapper;
+  private QuizCollection cachedCollection;
 
-  public JsonRepository(PathsProvider pathsProvider) {
+  public QuizzRepository(ObjectMapper objectMapper, PathsProvider pathsProvider) {
     this.pathsProvider = pathsProvider;
-    this.objectMapper = new ObjectMapper();
-    this.objectMapper.registerModule(new JavaTimeModule());
-    this.objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    this.objectMapper = objectMapper;
   }
 
-  public QuizCollection load() throws IOException {
+  public QuizCollection get() {
+    return cachedCollection;
+  }
+
+  public QuizCollection loadFromFile() throws RuntimeException {
     Path dataPath = pathsProvider.getDataFilePath();
     Path appDir = pathsProvider.getAppDirectory();
 
-    if (!Files.exists(appDir)) {
-      Files.createDirectories(appDir);
-    }
-
-    if (!Files.exists(dataPath)) {
-      return new QuizCollection();
-    }
-
     try {
-      return objectMapper.readValue(dataPath.toFile(), QuizCollection.class);
+      if (!Files.exists(appDir)) {
+        Files.createDirectories(appDir);
+      }
+
+      if (!Files.exists(dataPath)) {
+        return new QuizCollection();
+      }
+
+      cachedCollection = objectMapper.readValue(dataPath.toFile(), QuizCollection.class);
+      return cachedCollection;
     } catch (IOException e) {
-      throw new IOException("Failed to parse quiz data: " + e.getMessage(), e);
+      throw new RuntimeException("Failed to parse quiz data: " + e.getMessage(), e);
     }
   }
 
-  public void save(QuizCollection collection) throws IOException {
+  public QuizCollection save(QuizCollection collection) throws IOException {
     Path dataPath = pathsProvider.getDataFilePath();
     Path appDir = pathsProvider.getAppDirectory();
 
@@ -47,6 +51,7 @@ public class JsonRepository {
     }
 
     objectMapper.writeValue(dataPath.toFile(), collection);
+    return loadFromFile();
   }
 
   public void exportToFile(QuizCollection collection, Path targetPath) throws IOException {

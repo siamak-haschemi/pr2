@@ -1,15 +1,17 @@
 package de.bht.pr.quizzr.swing.app;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme;
-import de.bht.pr.quizzr.swing.editor.EditorViewModel;
-import de.bht.pr.quizzr.swing.home.HomeViewModel;
-import de.bht.pr.quizzr.swing.importexport.ImportExportService;
-import de.bht.pr.quizzr.swing.model.QuizCollection;
-import de.bht.pr.quizzr.swing.persistence.JsonRepository;
-import de.bht.pr.quizzr.swing.persistence.PathsProvider;
+import de.bht.pr.quizzr.swing.editor.QuizEditorViewModel;
+import de.bht.pr.quizzr.swing.importexport.ImportExportViewModel;
 import de.bht.pr.quizzr.swing.practice.PracticeViewModel;
+import de.bht.pr.quizzr.swing.quiz.QuizManagerViewModel;
+import de.bht.pr.quizzr.swing.quiz.QuizzRepository;
+import de.bht.pr.quizzr.swing.util.PathsProvider;
 import de.bht.pr.quizzr.swing.validation.ValidationService;
-import java.io.IOException;
+
 import javax.swing.*;
 
 public class AppBootstrap {
@@ -24,53 +26,33 @@ public class AppBootstrap {
 
     // Initialize persistence
     PathsProvider pathsProvider = new PathsProvider();
-    JsonRepository repository = new JsonRepository(pathsProvider);
-    QuizCollection collection;
-    try {
-      collection = repository.load();
-    } catch (IOException e) {
-      int choice =
-          JOptionPane.showConfirmDialog(
-              null,
-              "Failed to load quiz data: " + e.getMessage() + "\n\nStart with empty collection?",
-              "Load Error",
-              JOptionPane.YES_NO_OPTION,
-              JOptionPane.ERROR_MESSAGE);
-      if (choice == JOptionPane.YES_OPTION) {
-        collection = new QuizCollection();
-        try {
-          repository.save(collection);
-        } catch (IOException ex) {
-          System.err.println("Failed to save empty collection: " + ex.getMessage());
-        }
-      } else {
-        System.exit(1);
-        return;
-      }
-    }
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+    QuizzRepository repository = new QuizzRepository(objectMapper, pathsProvider);
+    repository.loadFromFile();
 
     // Initialize services
     ValidationService validationService = new ValidationService();
-    ImportExportService importExportService = new ImportExportService(repository);
 
     // Initialize view models
-    HomeViewModel homeViewModel = new HomeViewModel(collection, repository, validationService);
-    EditorViewModel editorViewModel = new EditorViewModel(validationService);
+    QuizManagerViewModel homeViewModel = new QuizManagerViewModel(repository, validationService);
+    QuizEditorViewModel editorViewModel = new QuizEditorViewModel(validationService);
     PracticeViewModel practiceViewModel = new PracticeViewModel();
+    ImportExportViewModel importExportViewModel = new ImportExportViewModel(repository);
 
     // Create and show main frame
-    QuizCollection finalCollection = collection;
-    JsonRepository finalRepository = repository;
     SwingUtilities.invokeLater(
         () -> {
-          MainView mainFrame =
-              new MainView(
-                  finalCollection,
+          AppView mainFrame =
+              new AppView(
+                  repository,
                   homeViewModel,
                   editorViewModel,
                   practiceViewModel,
-                  finalRepository,
-                  importExportService);
+                  importExportViewModel);
           mainFrame.setVisible(true);
         });
   }

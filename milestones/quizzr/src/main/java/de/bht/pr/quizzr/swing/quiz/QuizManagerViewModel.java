@@ -1,8 +1,7 @@
-package de.bht.pr.quizzr.swing.home;
+package de.bht.pr.quizzr.swing.quiz;
 
 import de.bht.pr.quizzr.swing.model.Quiz;
 import de.bht.pr.quizzr.swing.model.QuizCollection;
-import de.bht.pr.quizzr.swing.persistence.JsonRepository;
 import de.bht.pr.quizzr.swing.util.Result;
 import de.bht.pr.quizzr.swing.validation.ValidationService;
 import java.beans.PropertyChangeListener;
@@ -12,21 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HomeViewModel {
+public class QuizManagerViewModel {
   private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
   private final QuizCollection collection;
-  private final JsonRepository repository;
+  private final QuizzRepository repository;
   private final ValidationService validationService;
 
   private List<Quiz> filteredQuizzes;
   private String searchQuery = "";
   private Quiz selectedQuiz;
 
-  public HomeViewModel(
-      QuizCollection collection, JsonRepository repository, ValidationService validationService) {
-    this.collection = collection;
+  public QuizManagerViewModel(QuizzRepository repository, ValidationService validationService) {
     this.repository = repository;
     this.validationService = validationService;
+    this.collection = repository.get();
     this.filteredQuizzes = new ArrayList<>(collection.getQuizzes());
   }
 
@@ -34,16 +32,8 @@ public class HomeViewModel {
     pcs.addPropertyChangeListener(listener);
   }
 
-  public void removePropertyChangeListener(PropertyChangeListener listener) {
-    pcs.removePropertyChangeListener(listener);
-  }
-
   public List<Quiz> getFilteredQuizzes() {
     return filteredQuizzes;
-  }
-
-  public String getSearchQuery() {
-    return searchQuery;
   }
 
   public void setSearchQuery(String query) {
@@ -136,9 +126,5 @@ public class HomeViewModel {
 
   public void refresh() {
     updateFilter();
-  }
-
-  public QuizCollection getCollection() {
-    return collection;
   }
 }

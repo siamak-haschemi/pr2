@@ -1,6 +1,6 @@
 package de.bht.pr.quizzr.swing.practice;
 
-import de.bht.pr.quizzr.swing.app.MainView;
+import de.bht.pr.quizzr.swing.app.AppView;
 import de.bht.pr.quizzr.swing.model.Answer;
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.QuestionType;
@@ -151,7 +151,7 @@ public class PracticePanelNew extends JPanel implements PropertyChangeListener {
     }
 
     // Show settings dialog
-    MainView frame = (MainView) SwingUtilities.getWindowAncestor(this);
+    AppView frame = (AppView) SwingUtilities.getWindowAncestor(this);
     PracticeSettingsDialog dialog = new PracticeSettingsDialog(frame, quiz);
     dialog.setVisible(true);
 
@@ -335,7 +335,7 @@ public class PracticePanelNew extends JPanel implements PropertyChangeListener {
   }
 
   private void showSummary() {
-    MainView frame = (MainView) SwingUtilities.getWindowAncestor(this);
+    AppView frame = (AppView) SwingUtilities.getWindowAncestor(this);
     if (frame != null) {
       frame.showPracticeSummary(
           viewModel.getScore(),

@@ -1,48 +1,47 @@
 package de.bht.pr.quizzr.swing.app;
 
-import de.bht.pr.quizzr.swing.editor.EditorViewModel;
 import de.bht.pr.quizzr.swing.editor.QuestionsPanel;
 import de.bht.pr.quizzr.swing.editor.QuizEditorPanel;
-import de.bht.pr.quizzr.swing.home.HomePanel;
-import de.bht.pr.quizzr.swing.home.HomeViewModel;
-import de.bht.pr.quizzr.swing.importexport.ImportExportService;
-import de.bht.pr.quizzr.swing.model.QuizCollection;
-import de.bht.pr.quizzr.swing.persistence.JsonRepository;
+import de.bht.pr.quizzr.swing.editor.QuizEditorViewModel;
+import de.bht.pr.quizzr.swing.importexport.ImportExportView;
+import de.bht.pr.quizzr.swing.importexport.ImportExportViewModel;
 import de.bht.pr.quizzr.swing.practice.PracticePanelNew;
 import de.bht.pr.quizzr.swing.practice.PracticeSummaryDialog;
 import de.bht.pr.quizzr.swing.practice.PracticeViewModel;
-import java.awt.BorderLayout;
+import de.bht.pr.quizzr.swing.quiz.QuizManagerView;
+import de.bht.pr.quizzr.swing.quiz.QuizManagerViewModel;
+import de.bht.pr.quizzr.swing.quiz.QuizzRepository;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import javax.swing.*;
 
-public class MainView extends JFrame {
-  private final HomeViewModel homeViewModel;
-  private final EditorViewModel editorViewModel;
+public class AppView extends JFrame {
+  private final QuizManagerViewModel quizManagerViewModel;
+  private final QuizEditorViewModel quizEditorViewModel;
   private final PracticeViewModel practiceViewModel;
-  private final JsonRepository repository;
-  private final ImportExportService importExportService;
+  private final ImportExportViewModel importExportViewModel;
 
   private JTabbedPane tabbedPane;
-  private HomePanel homePanel;
+  private QuizManagerView homePanel;
   private JPanel editorPanel;
   private QuizEditorPanel quizEditorPanel;
   private QuestionsPanel questionsPanel;
   private PracticePanelNew practicePanel;
+  private ImportExportView importExportView;
 
-  public MainView(
-      QuizCollection collection,
-      HomeViewModel homeViewModel,
-      EditorViewModel editorViewModel,
+  public AppView(
+      QuizzRepository repository,
+      QuizManagerViewModel homeViewModel,
+      QuizEditorViewModel editorViewModel,
       PracticeViewModel practiceViewModel,
-      JsonRepository repository,
-      ImportExportService importExportService) {
-    this.homeViewModel = homeViewModel;
-    this.editorViewModel = editorViewModel;
+      ImportExportViewModel importExportViewModel) {
+    this.quizManagerViewModel = homeViewModel;
+    this.quizEditorViewModel = editorViewModel;
     this.practiceViewModel = practiceViewModel;
-    this.repository = repository;
-    this.importExportService = importExportService;
+    this.importExportViewModel = importExportViewModel;
 
     initializeUI();
     setupMenuBar();
@@ -58,12 +57,14 @@ public class MainView extends JFrame {
 
     tabbedPane = new JTabbedPane();
 
-    homePanel = new HomePanel(homeViewModel, editorViewModel);
+    homePanel = new QuizManagerView(quizManagerViewModel, quizEditorViewModel);
+
+    importExportView = new ImportExportView(importExportViewModel, homePanel);
 
     // Create editor sub-tabs
     JTabbedPane editorTabs = new JTabbedPane();
-    quizEditorPanel = new QuizEditorPanel(editorViewModel, homeViewModel);
-    questionsPanel = new QuestionsPanel(editorViewModel);
+    quizEditorPanel = new QuizEditorPanel(quizEditorViewModel, quizManagerViewModel);
+    questionsPanel = new QuestionsPanel(quizEditorViewModel);
     editorTabs.addTab("Quiz Properties", quizEditorPanel);
     editorTabs.addTab("Questions", questionsPanel);
     editorPanel = new JPanel(new BorderLayout());
@@ -87,10 +88,10 @@ public class MainView extends JFrame {
     saveNowItem.addActionListener(e -> saveNow());
 
     JMenuItem importItem = new JMenuItem("Import...");
-    importItem.addActionListener(e -> importQuizzes());
+    importItem.addActionListener(e -> importExportView.importQuizzes());
 
     JMenuItem exportItem = new JMenuItem("Export...");
-    exportItem.addActionListener(e -> exportQuizzes());
+    exportItem.addActionListener(e -> importExportView.exportQuizzes());
 
     JMenuItem exitItem = new JMenuItem("Exit");
     exitItem.addActionListener(e -> exit());
@@ -118,78 +119,12 @@ public class MainView extends JFrame {
 
   private void saveNow() {
     try {
-      homeViewModel.saveNow();
+      quizManagerViewModel.saveNow();
       JOptionPane.showMessageDialog(
           this, "Saved successfully", "Save", JOptionPane.INFORMATION_MESSAGE);
     } catch (IOException ex) {
       JOptionPane.showMessageDialog(
           this, "Save failed: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
-  }
-
-  private void importQuizzes() {
-    JFileChooser chooser = new JFileChooser();
-    chooser.setFileFilter(
-        new javax.swing.filechooser.FileNameExtensionFilter("JSON files", "json"));
-    if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-      try {
-        de.bht.pr.quizzr.swing.model.QuizCollection fullCollection = homeViewModel.getCollection();
-        de.bht.pr.quizzr.swing.util.Result<de.bht.pr.quizzr.swing.model.QuizCollection, String>
-            result =
-                importExportService.importFromFile(
-                    chooser.getSelectedFile().toPath(), fullCollection);
-
-        if (result.isFailure()) {
-          JOptionPane.showMessageDialog(
-              this,
-              "Import failed: " + result.getError().orElse("Unknown error"),
-              "Import Error",
-              JOptionPane.ERROR_MESSAGE);
-          return;
-        }
-
-        de.bht.pr.quizzr.swing.model.QuizCollection imported = result.getValue().orElse(null);
-        if (imported != null) {
-          de.bht.pr.quizzr.swing.model.QuizCollection merged =
-              importExportService.mergeCollections(fullCollection, imported);
-
-          // Update the collection
-          fullCollection.getQuizzes().clear();
-          fullCollection.getQuizzes().addAll(merged.getQuizzes());
-
-          homeViewModel.refresh();
-
-          JOptionPane.showMessageDialog(
-              this,
-              "Successfully imported " + imported.getQuizzes().size() + " quiz(zes)",
-              "Import Successful",
-              JOptionPane.INFORMATION_MESSAGE);
-        }
-      } catch (Exception ex) {
-        JOptionPane.showMessageDialog(
-            this, "Import failed: " + ex.getMessage(), "Import Error", JOptionPane.ERROR_MESSAGE);
-      }
-    }
-  }
-
-  private void exportQuizzes() {
-    JFileChooser chooser = new JFileChooser();
-    chooser.setFileFilter(
-        new javax.swing.filechooser.FileNameExtensionFilter("JSON files", "json"));
-    chooser.setSelectedFile(new java.io.File("quizzes-export.json"));
-    if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-      try {
-        importExportService.exportToFile(
-            homeViewModel.getCollection(), chooser.getSelectedFile().toPath());
-        JOptionPane.showMessageDialog(
-            this,
-            "Successfully exported to " + chooser.getSelectedFile().getName(),
-            "Export Successful",
-            JOptionPane.INFORMATION_MESSAGE);
-      } catch (Exception ex) {
-        JOptionPane.showMessageDialog(
-            this, "Export failed: " + ex.getMessage(), "Export Error", JOptionPane.ERROR_MESSAGE);
-      }
     }
   }
 
