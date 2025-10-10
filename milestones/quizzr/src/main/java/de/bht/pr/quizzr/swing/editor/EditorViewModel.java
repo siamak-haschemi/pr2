@@ -1,10 +1,8 @@
 package de.bht.pr.quizzr.swing.editor;
 
-import de.bht.pr.quizzr.swing.autosave.AutosaveService;
 import de.bht.pr.quizzr.swing.model.Answer;
 import de.bht.pr.quizzr.swing.model.Question;
 import de.bht.pr.quizzr.swing.model.Quiz;
-import de.bht.pr.quizzr.swing.model.QuizCollection;
 import de.bht.pr.quizzr.swing.util.Result;
 import de.bht.pr.quizzr.swing.validation.ValidationService;
 import java.beans.PropertyChangeListener;
@@ -13,29 +11,16 @@ import java.util.Collections;
 
 public class EditorViewModel {
   private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-  private final AutosaveService autosaveService;
   private final ValidationService validationService;
 
   private Quiz currentQuiz;
-  private QuizCollection collection;
 
-  public EditorViewModel(AutosaveService autosaveService, ValidationService validationService) {
-    this.autosaveService = autosaveService;
+  public EditorViewModel(ValidationService validationService) {
     this.validationService = validationService;
-  }
-
-  public void setCollection(QuizCollection collection) {
-    this.collection = collection;
   }
 
   public ValidationService getValidationService() {
     return validationService;
-  }
-
-  private void triggerAutosave() {
-    if (collection != null) {
-      autosaveService.scheduleAutosave(collection);
-    }
   }
 
   public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -64,7 +49,6 @@ public class EditorViewModel {
     question.setText("");
     currentQuiz.getQuestions().add(question);
     pcs.firePropertyChange("questions", null, currentQuiz.getQuestions());
-    triggerAutosave();
     return question;
   }
 
@@ -74,7 +58,6 @@ public class EditorViewModel {
     }
     currentQuiz.getQuestions().remove(question);
     pcs.firePropertyChange("questions", null, currentQuiz.getQuestions());
-    triggerAutosave();
   }
 
   public void moveQuestionUp(Question question) {
@@ -85,7 +68,6 @@ public class EditorViewModel {
     if (index > 0) {
       Collections.swap(currentQuiz.getQuestions(), index, index - 1);
       pcs.firePropertyChange("questions", null, currentQuiz.getQuestions());
-      triggerAutosave();
     }
   }
 
@@ -97,7 +79,6 @@ public class EditorViewModel {
     if (index >= 0 && index < currentQuiz.getQuestions().size() - 1) {
       Collections.swap(currentQuiz.getQuestions(), index, index + 1);
       pcs.firePropertyChange("questions", null, currentQuiz.getQuestions());
-      triggerAutosave();
     }
   }
 
@@ -107,7 +88,6 @@ public class EditorViewModel {
       return validation;
     }
     pcs.firePropertyChange("questions", null, currentQuiz.getQuestions());
-    triggerAutosave();
     return Result.success(null);
   }
 

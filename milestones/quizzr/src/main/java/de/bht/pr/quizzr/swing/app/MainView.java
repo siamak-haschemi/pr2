@@ -1,6 +1,5 @@
 package de.bht.pr.quizzr.swing.app;
 
-import de.bht.pr.quizzr.swing.autosave.AutosaveService;
 import de.bht.pr.quizzr.swing.editor.EditorViewModel;
 import de.bht.pr.quizzr.swing.editor.QuestionsPanel;
 import de.bht.pr.quizzr.swing.editor.QuizEditorPanel;
@@ -8,6 +7,7 @@ import de.bht.pr.quizzr.swing.home.HomePanel;
 import de.bht.pr.quizzr.swing.home.HomeViewModel;
 import de.bht.pr.quizzr.swing.importexport.ImportExportService;
 import de.bht.pr.quizzr.swing.model.QuizCollection;
+import de.bht.pr.quizzr.swing.persistence.JsonRepository;
 import de.bht.pr.quizzr.swing.practice.PracticePanelNew;
 import de.bht.pr.quizzr.swing.practice.PracticeSummaryDialog;
 import de.bht.pr.quizzr.swing.practice.PracticeViewModel;
@@ -21,7 +21,7 @@ public class MainView extends JFrame {
   private final HomeViewModel homeViewModel;
   private final EditorViewModel editorViewModel;
   private final PracticeViewModel practiceViewModel;
-  private final AutosaveService autosaveService;
+  private final JsonRepository repository;
   private final ImportExportService importExportService;
 
   private JTabbedPane tabbedPane;
@@ -36,12 +36,12 @@ public class MainView extends JFrame {
       HomeViewModel homeViewModel,
       EditorViewModel editorViewModel,
       PracticeViewModel practiceViewModel,
-      AutosaveService autosaveService,
+      JsonRepository repository,
       ImportExportService importExportService) {
     this.homeViewModel = homeViewModel;
     this.editorViewModel = editorViewModel;
     this.practiceViewModel = practiceViewModel;
-    this.autosaveService = autosaveService;
+    this.repository = repository;
     this.importExportService = importExportService;
 
     initializeUI();
@@ -158,7 +158,6 @@ public class MainView extends JFrame {
           fullCollection.getQuizzes().addAll(merged.getQuizzes());
 
           homeViewModel.refresh();
-          autosaveService.scheduleAutosave(fullCollection);
 
           JOptionPane.showMessageDialog(
               this,
@@ -199,7 +198,6 @@ public class MainView extends JFrame {
         JOptionPane.showConfirmDialog(
             this, "Are you sure you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
     if (choice == JOptionPane.YES_OPTION) {
-      autosaveService.shutdown();
       dispose();
       System.exit(0);
     }

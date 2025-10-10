@@ -1,8 +1,8 @@
 package de.bht.pr.quizzr.swing.home;
 
-import de.bht.pr.quizzr.swing.autosave.AutosaveService;
 import de.bht.pr.quizzr.swing.model.Quiz;
 import de.bht.pr.quizzr.swing.model.QuizCollection;
+import de.bht.pr.quizzr.swing.persistence.JsonRepository;
 import de.bht.pr.quizzr.swing.util.Result;
 import de.bht.pr.quizzr.swing.validation.ValidationService;
 import java.beans.PropertyChangeListener;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class HomeViewModel {
   private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
   private final QuizCollection collection;
-  private final AutosaveService autosaveService;
+  private final JsonRepository repository;
   private final ValidationService validationService;
 
   private List<Quiz> filteredQuizzes;
@@ -23,11 +23,9 @@ public class HomeViewModel {
   private Quiz selectedQuiz;
 
   public HomeViewModel(
-      QuizCollection collection,
-      AutosaveService autosaveService,
-      ValidationService validationService) {
+      QuizCollection collection, JsonRepository repository, ValidationService validationService) {
     this.collection = collection;
-    this.autosaveService = autosaveService;
+    this.repository = repository;
     this.validationService = validationService;
     this.filteredQuizzes = new ArrayList<>(collection.getQuizzes());
   }
@@ -88,7 +86,6 @@ public class HomeViewModel {
     Quiz quiz = new Quiz(name);
     collection.getQuizzes().add(quiz);
     updateFilter();
-    autosaveService.scheduleAutosave(collection);
     return Result.success(quiz);
   }
 
@@ -100,7 +97,6 @@ public class HomeViewModel {
 
     quiz.setName(newName);
     updateFilter();
-    autosaveService.scheduleAutosave(collection);
     return Result.success(null);
   }
 
@@ -123,7 +119,6 @@ public class HomeViewModel {
 
     collection.getQuizzes().add(duplicate);
     updateFilter();
-    autosaveService.scheduleAutosave(collection);
     return Result.success(duplicate);
   }
 
@@ -133,11 +128,10 @@ public class HomeViewModel {
       setSelectedQuiz(null);
     }
     updateFilter();
-    autosaveService.scheduleAutosave(collection);
   }
 
   public void saveNow() throws IOException {
-    autosaveService.saveNow(collection);
+    repository.save(collection);
   }
 
   public void refresh() {

@@ -4,13 +4,12 @@ import de.bht.pr.quizzr.swing.app.MainView;
 import de.bht.pr.quizzr.swing.editor.EditorViewModel;
 import de.bht.pr.quizzr.swing.model.Quiz;
 import de.bht.pr.quizzr.swing.util.Result;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 public class HomePanel extends JPanel implements PropertyChangeListener {
   private final HomeViewModel viewModel;
